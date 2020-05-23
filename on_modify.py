@@ -43,58 +43,75 @@ except AttributeError:
     input_stream = sys.stdin
 
 
-def extract_tags_from(json_obj):
-    # Extract attributes for use as tags.
-    tags = [json_obj['description']]
-
+# Extract attributes for use as tags.
+def extract_tags(json_obj):
+    tags = []
+    if 'description' in json_obj:
+        tags.append(json_obj['description'])
     if 'project' in json_obj:
         tags.append(json_obj['project'])
-
     if 'tags' in json_obj:
         tags.extend(json_obj['tags'])
-
     return tags
 
 
-def extract_annotation_from(json_obj):
-
+def extract_annotation(json_obj):
     if 'annotations' not in json_obj:
         return '\'\''
 
     return json_obj['annotations'][0]['description']
 
 
+def extract_start(json_obj):
+    return json_obj['start']
+
+
+# Check if the active task matches the one in timewarrior, otherwsie exit
+def check_tags(tags, action):
+    active_tag_count = int(subprocess.run(['timew', 'get', 'dom.active.tag.count'], capture_output=True, text=True).stdout)
+    match = True
+    if len(tags) != active_tag_count:
+        match = False
+    else:
+        for i in range(1, active_tag_count+1):
+            if subprocess.run(['timew', 'get', 'dom.active.tag.' + str(i)], capture_output=True, text=True).stdout[:-1] not in tags:
+                match = False
+    if not match:
+        print('Active timewarrior tags do not match modified task - Aborting ' + action)
+        sys.exit(0)
+
+
 def main(old, new):
+    new_tags = extract_tags(new)
+    old_tags = extract_tags(old)
+    if 'start' in new:
+        start = extract_start(new)
 
-    start_or_stop = ''
+        # Started task.
+        if 'start' not in old:
+            subprocess.call(['timew', 'start', start] + new_tags + [':yes', ':adjust'])
 
-    # Started task.
-    if 'start' in new and 'start' not in old:
-        start_or_stop = 'start'
+        # Task modified
+        else:
+            check_tags(old_tags, 'modify')
+
+            if old_tags != new_tags:
+                subprocess.call(['timew', 'untag', '@1'] + old_tags + [':yes'])
+                subprocess.call(['timew', 'tag', '@1'] + new_tags + [':yes'])
+
+            if start != extract_start(old):
+                print('Updating Timewarrior start time to ' + start)
+                subprocess.call(['timew', 'modify', 'start', '@1', start])
+
+            old_annotation = extract_annotation(old)
+            new_annotation = extract_annotation(new)
+            if old_annotation != new_annotation:
+                subprocess.call(['timew', 'annotate', '@1', new_annotation])
 
     # Stopped task.
-    elif ('start' not in new or 'end' in new) and 'start' in old:
-        start_or_stop = 'stop'
-
-    if start_or_stop:
-        tags = extract_tags_from(new)
-
-        subprocess.call(['timew', start_or_stop] + tags + [':yes'])
-
-    # Modifications to task other than start/stop
-    elif 'start' in new and 'start' in old:
-        old_tags = extract_tags_from(old)
-        new_tags = extract_tags_from(new)
-
-        if old_tags != new_tags:
-            subprocess.call(['timew', 'untag', '@1'] + old_tags + [':yes'])
-            subprocess.call(['timew', 'tag', '@1'] + new_tags + [':yes'])
-
-        old_annotation = extract_annotation_from(old)
-        new_annotation = extract_annotation_from(new)
-
-        if old_annotation != new_annotation:
-            subprocess.call(['timew', 'annotate', '@1', new_annotation])
+    elif 'start' in old:
+        check_tags(old_tags, 'stop')
+        subprocess.call(['timew', 'stop'] + new_tags + [':yes'])
 
 
 if __name__ == "__main__":
