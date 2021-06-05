@@ -2,7 +2,7 @@
 
 ###############################################################################
 #
-# Copyright 2016 - 2021, Thomas Lauf, Paul Beckingham, Federico Hernandez.
+# Copyright 2016 - 2021, Gothenburg Bit Factory
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,13 +26,11 @@
 #
 ###############################################################################
 
-from __future__ import print_function
-
 import json
 import subprocess
 import sys
 
-# Hook should extract all of the following for use as Timewarrior tags:
+# Hook should extract all the following for use as Timewarrior tags:
 #   UUID
 #   Project
 #   Tags

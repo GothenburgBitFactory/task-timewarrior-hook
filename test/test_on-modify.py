@@ -29,12 +29,11 @@
 import os
 import subprocess
 import sys
-import unittest
+
+from basetest import Timew, TestCase
 
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from basetest import Timew, TestCase
 
 
 class TestOnModifyHookScript(TestCase):
@@ -42,7 +41,7 @@ class TestOnModifyHookScript(TestCase):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         self.t = Timew()
 
-        self.process = subprocess.Popen([os.path.join(current_dir, '../on-modify.timewarrior')],
+        self.process = subprocess.Popen([os.path.join(current_dir, '../on_modify.py')],
                                         env={
                                             'PATH': '../src:' + os.environ['PATH'],
                                             'TIMEWARRIORDB': self.t.datadir
@@ -215,8 +214,3 @@ class TestOnModifyHookScript(TestCase):
         j = self.t.export()
         self.assertEqual(len(j), 1)
         self.assertClosedInterval(j[0], expectedTags=["Foo"])
-
-
-if __name__ == "__main__":
-    from simpletap import TAPTestRunner
-    unittest.main(testRunner=TAPTestRunner())
