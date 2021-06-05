@@ -39,12 +39,12 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 class TestOnModifyHookScript(TestCase):
     def setUp(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.t = Timew()
+        self.timew = Timew()
 
         self.process = subprocess.Popen([os.path.join(current_dir, '../on-modify.py')],
                                         env={
                                             'PATH': '../src:' + os.environ['PATH'],
-                                            'TIMEWARRIORDB': self.t.datadir
+                                            'TIMEWARRIORDB': self.timew.datadir
                                         },
                                         shell=True,
                                         stdin=subprocess.PIPE,
@@ -53,7 +53,7 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_annotate(self):
         """on-modify hook should process 'task annotate'"""
-        self.t("start 10min ago Foo")
+        self.timew("start 10min ago Foo")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T201911Z","modified":"20190820T201911Z","start":"20190820T201911Z","status":"pending","uuid":"3495a755-c4c6-4106-aabe-c0d3d128b65a"}
@@ -62,13 +62,13 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertOpenInterval(j[0], expectedTags=["Foo"], expectedAnnotation="Annotation")
 
     def test_hook_should_process_append(self):
         """on-modify hook should process 'task append'"""
-        self.t("start 10min ago Foo")
+        self.timew("start 10min ago Foo")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T201911Z","modified":"20190820T201911Z","start":"20190820T201911Z","status":"pending","uuid":"da603270-ce2b-4a5a-9273-c67c2d2d0067"}
@@ -77,13 +77,13 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertOpenInterval(j[0], expectedTags=["Foo Bar"])
 
     def test_hook_should_process_delete(self):
         """on-modify hook should process 'task delete'"""
-        self.t("start 10min ago Foo")
+        self.timew("start 10min ago Foo")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T201911Z","modified":"20190820T201911Z","start":"20190820T201911Z","status":"pending","uuid":"25b66283-96e0-42b4-b835-8efd0ea1043c"}
@@ -92,14 +92,14 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertClosedInterval(j[0], expectedTags=["Foo"])
 
     def test_hook_should_process_denotate(self):
         """on-modify hook should process 'task denotate'"""
-        self.t("start 10min ago Foo")
-        self.t("annotate @1 Annotation")
+        self.timew("start 10min ago Foo")
+        self.timew("annotate @1 Annotation")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T201911Z","modified":"20190820T201911Z","start":"20190820T201911Z","status":"pending","uuid":"8811cc93-a495-4fa6-993e-2b96cffc48e0","annotations":[{"entry":"20190820T201911Z","description":"Annotation"}]}
@@ -108,13 +108,13 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertOpenInterval(j[0], expectedTags=["Foo"], expectedAnnotation="")
 
     def test_hook_should_process_done(self):
         """on-modify hook should process 'task done'"""
-        self.t("start 10min ago Foo")
+        self.timew("start 10min ago Foo")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T201912Z","modified":"20190820T201912Z","start":"20190820T201912Z","status":"pending","uuid":"c418b958-5c3c-4633-89a4-4a2f678d74d0"}
@@ -123,13 +123,13 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(b'', err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertClosedInterval(j[0], expectedTags=["Foo"])
 
     def test_hook_should_process_modify_desc(self):
         """on-modify hook should process 'task modify' for changing description"""
-        self.t("start 10min ago Foo")
+        self.timew("start 10min ago Foo")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T203416Z","modified":"20190820T203416Z","start":"20190820T203416Z","status":"pending","uuid":"189e6745-04e0-4b17-949f-900cf63ab8d9"}
@@ -138,13 +138,13 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertOpenInterval(j[0], expectedTags=["Bar"])
 
     def test_hook_should_process_modify_tags(self):
         """on-modify hook should process 'task modify' for changing tags"""
-        self.t("start 10min ago Foo Tag Bar")
+        self.timew("start 10min ago Foo Tag Bar")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T203620Z","modified":"20190820T203620Z","start":"20190820T203620Z","status":"pending","tags":["Tag","Bar"],"uuid":"6cab88f0-ac12-4a87-995a-0e7d39810c05"}
@@ -153,13 +153,13 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertOpenInterval(j[0], expectedTags=["Foo", "Tag", "Baz"])
 
     def test_hook_should_process_modify_project(self):
         """on-modify hook should process 'task modify' for changing project"""
-        self.t("start Foo dummy")
+        self.timew("start Foo dummy")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T203842Z","modified":"20190820T203842Z","project":"dummy","start":"20190820T203842Z","status":"pending","uuid":"d95dc7a0-6189-4692-b58a-4ab60d539c8d"}
@@ -168,13 +168,13 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(b'', err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertOpenInterval(j[0], expectedTags=["Foo", "test"])
 
     def test_hook_should_process_prepend(self):
         """on-modify hook should process 'task prepend'"""
-        self.t("start 10min ago Foo")
+        self.timew("start 10min ago Foo")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T203842Z","modified":"20190820T203842Z","start":"20190820T203842Z","status":"pending","uuid":"02bc8839-b304-49f9-ac1a-29ac4850583f"}
@@ -183,7 +183,7 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertOpenInterval(j[0], expectedTags=["Prefix Foo"])
 
@@ -196,13 +196,13 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertOpenInterval(j[0], expectedTags=["Foo"])
 
     def test_hook_should_process_stop(self):
         """on-modify hook should process 'task stop'"""
-        self.t("start 10min ago Foo")
+        self.timew("start 10min ago Foo")
 
         out, err = self.process.communicate(input=b"""\
 {"description":"Foo","entry":"20190820T203842Z","modified":"20190820T203842Z","start":"20190820T203842Z","status":"pending","uuid":"13f83e99-f6a2-4857-9e00-bdeede064772"}
@@ -211,6 +211,6 @@ class TestOnModifyHookScript(TestCase):
 
         self.assertEqual(bytes(b''), err)
 
-        j = self.t.export()
+        j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertClosedInterval(j[0], expectedTags=["Foo"])
