@@ -1,4 +1,8 @@
 FROM ubuntu:20.04
+ARG TASK_BRANCH
+ARG TIMEW_BRANCH
+
+RUN echo "Building image task-${TASK_BRANCH}-timew-${TIMEW_BRANCH}"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -33,7 +37,7 @@ ENV LANGUAGE en_US.UTF-8
 
 # Install Taskwarrior
 WORKDIR /
-RUN git clone --recursive -b master https://github.com/GothenburgBitFactory/taskwarrior.git
+RUN git clone --recursive -b ${TASK_BRANCH} https://github.com/GothenburgBitFactory/taskwarrior.git
 WORKDIR /taskwarrior
 RUN cmake -DCMAKE_BUILD_TYPE=debug .
 RUN make -j8
@@ -41,15 +45,15 @@ RUN make install
 
 # Install Timewarrior
 WORKDIR /
-RUN git clone --recursive -b master https://github.com/GothenburgBitFactory/timewarrior.git
+RUN git clone --recursive -b ${TIMEW_BRANCH} https://github.com/GothenburgBitFactory/timewarrior.git
 WORKDIR /timewarrior
 RUN cmake -DCMAKE_BUILD_TYPE=debug .
 RUN make -j8
 RUN make install
 
 # Copy on-modify-hook
-ADD . /timew-on-modify-hook
-WORKDIR /timew-on-modify-hook
+ADD . /task-on-modify-hook
+WORKDIR /task-on-modify-hook
 #RUN git clean -dfx
 
 # Install on-modify-hook
@@ -72,9 +76,7 @@ RUN ( \
     ) > diagnostics.txt 2>&1
 
 ENV TASK_USE_PATH=true TIMEW_USE_PATH=true
-CMD [ "bash", "-c", "\
-    /venv/bin/pytest /timew-on-modify-hook/test/test_on-modify_e2e.py \
-    "]
+CMD [ "bash", "-c", "/venv/bin/pytest /task-on-modify-hook/test/test_on-modify_e2e.py"]
 
 
 

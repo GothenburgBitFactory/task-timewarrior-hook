@@ -2,8 +2,47 @@ version: '3'
 services:
   task-stable-timew-stable:
     build:
-        context: .
-        dockerfile: test/docker/Dockerfile
+      context: .
+      dockerfile: test/docker/Dockerfile
+      args:
+        TASK_BRANCH: "master"
+        TIMEW_BRANCH: "master"
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+
+  task-dev-timew-stable:
+    build:
+      context: .
+      dockerfile: test/docker/Dockerfile
+      args:
+        TASK_BRANCH: "2.6.0"
+        TIMEW_BRANCH: "master"
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+
+  task-stable-timew-dev:
+    build:
+      context: .
+      dockerfile: test/docker/Dockerfile
+      args:
+        TASK_BRANCH: "master"
+        TIMEW_BRANCH: "dev"
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+
+  task-dev-timew-dev:
+    build:
+      context: .
+      dockerfile: test/docker/Dockerfile
+      args:
+        TASK_BRANCH: "2.6.0"
+        TIMEW_BRANCH: "dev"
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
