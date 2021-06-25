@@ -1,0 +1,38 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "task [stable] & timew [stable]"
+            runner: ubuntu-latest
+            container: task-stable-timew-stable
+          - name: "task [dev] & timew [stable]"
+            runner: ubuntu-latest
+            container: task-dev-timew-stable
+          - name: "task [stable] & timew [dev]"
+            runner: ubuntu-latest
+            container: task-stable-timew-dev
+          - name: "task [dev] & timew [dev]"
+            runner: ubuntu-latest
+            container: task-dev-timew-dev
+
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: ${{ matrix.continue-on-error == true }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build ${{ matrix.name }}
+        env:
+          DOCKER_REGISTRY: docker.pkg.github.com
+          DOCKER_CACHE_IMAGE: docker.pkg.github.com/${{ github.repository }}/timewarrior_cache
+          GITHUB_USER: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONTAINER: ${{ matrix.container }}
+        run: docker-compose build ${CONTAINER}
+      - name: Test ${{ matrix.name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONTAINER: ${{ matrix.container }}
+        run: docker-compose run ${CONTAINER}
