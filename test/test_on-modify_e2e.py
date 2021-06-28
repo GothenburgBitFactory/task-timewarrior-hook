@@ -40,12 +40,11 @@ class TestOnModifyHookScript(TestCase):
             self.task.hooks.add("on-modify", f.read(), False)
 
         self.task.deactivate_hooks()
-
-    def test_hook_should_process_annotate(self):
-        """on-modify hook should process 'task annotate'"""
         self.task.reset(keep_config=True, keep_hooks=True)
         self.timew.reset(keep_config=True)
 
+    def test_hook_should_process_annotate(self):
+        """on-modify hook should process 'task annotate'"""
         self.task("add Foo")
         self.task("start 1")
         self.timew("start 10min ago Foo")
@@ -61,9 +60,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_append(self):
         """on-modify hook should process 'task append'"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
         self.task("1 start")
         self.timew("start 10min ago Foo")
@@ -79,9 +75,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_delete(self):
         """on-modify hook should process 'task delete'"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
         self.task("start 1")
         self.timew("start 10min ago Foo")
@@ -96,9 +89,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_denotate(self):
         """on-modify hook should process 'task denotate'"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
         self.task("1 start")
         self.task("1 annotate Annotation")
@@ -116,9 +106,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_done(self):
         """on-modify hook should process 'task done'"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
         self.task("1 start")
         self.timew("start 10min ago Foo")
@@ -133,9 +120,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_modify_description(self):
         """on-modify hook should process 'task modify' for changing description"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
         self.task("1 start")
         self.timew("start 10min ago Foo")
@@ -150,9 +134,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_modify_tags(self):
         """on-modify hook should process 'task modify' for changing tags"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
         self.task("1 start")
         self.task("1 modify +Bar +Tag")
@@ -168,9 +149,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_modify_project(self):
         """on-modify hook should process 'task modify' for changing project"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo project:dummy")
         self.task("1 start")
 
@@ -186,9 +164,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_prepend(self):
         """on-modify hook should process 'task prepend'"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
         self.task("1 start")
 
@@ -204,9 +179,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_start(self):
         """on-modify hook should process 'task start'"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
 
         self.task.activate_hooks()
@@ -219,9 +191,6 @@ class TestOnModifyHookScript(TestCase):
 
     def test_hook_should_process_stop(self):
         """on-modify hook should process 'task stop'"""
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
-
         self.task("add Foo")
         self.task("1 start")
 
