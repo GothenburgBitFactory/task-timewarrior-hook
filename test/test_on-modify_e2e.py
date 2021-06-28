@@ -25,6 +25,7 @@
 # https://www.opensource.org/licenses/mit-license.php
 #
 ###############################################################################
+import os.path
 
 from basetest import Timew, Task, TestCase
 
@@ -33,15 +34,16 @@ class TestOnModifyHookScript(TestCase):
 
     def setUp(self):
         self.timew = Timew(datadir="/root/.timewarrior")
-        self.task = Task(datadir="/root/.task", taskrc="/root/.taskrc")
+        self.timew.reset(keep_config=True)
 
-        with open("/task-on-modify-hook/on-modify.py", "r") as f:
+        self.task = Task(datadir="/root/.task", taskrc="/root/.taskrc")
+        self.task.reset(keep_config=True)
+
+        with open(os.path.join(os.path.dirname(__file__), "..", "on-modify.py"), "r") as f:
             self.task.hooks.clear()
             self.task.hooks.add("on-modify", f.read(), False)
 
         self.task.deactivate_hooks()
-        self.task.reset(keep_config=True, keep_hooks=True)
-        self.timew.reset(keep_config=True)
 
     def test_hook_should_process_annotate(self):
         """on-modify hook should process 'task annotate'"""
