@@ -72,7 +72,6 @@ RUN ( \
     task diagnostics ; \
     timew diagnostics ; \
     /venv/bin/pip freeze ; \
-    /venv/bin/pytest --version \
     ) > diagnostics.txt 2>&1
 
 ENV TASK_USE_PATH=true TIMEW_USE_PATH=true
