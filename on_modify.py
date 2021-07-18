@@ -53,6 +53,9 @@ def extract_tags_from(json_obj):
     if 'tags' in json_obj:
         tags.extend(json_obj['tags'])
 
+    if 'annotations' in json_obj:
+        tags.append(json_obj['annotations'][-1]['description'])
+
     return tags
 
 
