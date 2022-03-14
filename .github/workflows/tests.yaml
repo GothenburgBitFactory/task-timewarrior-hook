@@ -9,15 +9,15 @@ jobs:
           - name: "task [stable] & timew [stable]"
             runner: ubuntu-latest
             container: task-stable-timew-stable
-          - name: "task [dev] & timew [stable]"
+          - name: "task [develop] & timew [stable]"
             runner: ubuntu-latest
-            container: task-dev-timew-stable
-          - name: "task [stable] & timew [dev]"
+            container: task-develop-timew-stable
+          - name: "task [stable] & timew [develop]"
             runner: ubuntu-latest
-            container: task-stable-timew-dev
-          - name: "task [dev] & timew [dev]"
+            container: task-stable-timew-develop
+          - name: "task [develop] & timew [develop]"
             runner: ubuntu-latest
-            container: task-dev-timew-dev
+            container: task-develop-timew-develop
 
     runs-on: ${{ matrix.runner }}
     continue-on-error: ${{ matrix.continue-on-error == true }}

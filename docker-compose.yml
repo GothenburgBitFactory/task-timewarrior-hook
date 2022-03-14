@@ -5,44 +5,44 @@ services:
       context: .
       dockerfile: test/docker/Dockerfile
       args:
-        TASK_BRANCH: "master"
-        TIMEW_BRANCH: "master"
+        TASK_BRANCH: "stable"
+        TIMEW_BRANCH: "stable"
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
     tty: true
 
-  task-dev-timew-stable:
+  task-develop-timew-stable:
     build:
       context: .
       dockerfile: test/docker/Dockerfile
       args:
-        TASK_BRANCH: "2.6.0"
-        TIMEW_BRANCH: "master"
+        TASK_BRANCH: "develop"
+        TIMEW_BRANCH: "stable"
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
     tty: true
 
-  task-stable-timew-dev:
+  task-stable-timew-develop:
     build:
       context: .
       dockerfile: test/docker/Dockerfile
       args:
-        TASK_BRANCH: "master"
-        TIMEW_BRANCH: "dev"
+        TASK_BRANCH: "stable"
+        TIMEW_BRANCH: "develop"
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
     tty: true
 
-  task-dev-timew-dev:
+  task-develop-timew-develop:
     build:
       context: .
       dockerfile: test/docker/Dockerfile
       args:
-        TASK_BRANCH: "2.6.0"
-        TIMEW_BRANCH: "dev"
+        TASK_BRANCH: "develop"
+        TIMEW_BRANCH: "develop"
     network_mode: "host"
     security_opt:
       - label=type:container_runtime_t
