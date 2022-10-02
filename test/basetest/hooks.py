@@ -54,7 +54,7 @@ class Hooks(object):
 
         # Check if the hooks dir already exists
         if not os.path.isdir(self.hookdir):
-            os.mkdir(self.hookdir)
+            os.makedirs(self.hookdir)
 
     def __repr__(self):
         enabled = []
