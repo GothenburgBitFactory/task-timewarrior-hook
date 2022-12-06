@@ -26,7 +26,7 @@ jobs:
       - name: Build ${{ matrix.name }}
         env:
           DOCKER_REGISTRY: ghcr.io
-          GITHUB_USER: ${{ github.actor }}
+          GITHUB_USER: ${{ github.repository_owner }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.container }}
         run: docker-compose build ${CONTAINER}
