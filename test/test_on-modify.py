@@ -41,7 +41,7 @@ class TestOnModifyHookScript(TestCase):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         self.t = Timew()
 
-        self.process = subprocess.Popen([os.path.join(current_dir, '../on-modify.py')],
+        self.process = subprocess.Popen([os.path.join(current_dir, '../on_modify.py')],
                                         env={
                                             'PATH': '../src:' + os.environ['PATH'],
                                             'TIMEWARRIORDB': self.t.datadir

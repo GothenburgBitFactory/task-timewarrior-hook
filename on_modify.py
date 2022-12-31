@@ -30,7 +30,7 @@ import json
 import subprocess
 import sys
 
-# Hook should extract all of the following for use as Timewarrior tags:
+# Hook should extract all the following for use as Timewarrior tags:
 #   UUID
 #   Project
 #   Tags
