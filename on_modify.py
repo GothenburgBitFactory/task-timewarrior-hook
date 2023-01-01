@@ -42,11 +42,6 @@ try:
 except AttributeError:
     input_stream = sys.stdin
 
-# Make no changes to the task, simply observe.
-old = json.loads(input_stream.readline().decode("utf-8", errors="replace"))
-new = json.loads(input_stream.readline().decode("utf-8", errors="replace"))
-print(json.dumps(new))
-
 
 def extract_tags_from(json_obj):
     # Extract attributes for use as tags.
@@ -69,32 +64,41 @@ def extract_annotation_from(json_obj):
     return json_obj['annotations'][0]['description']
 
 
-start_or_stop = ''
+def main(old, new):
 
-# Started task.
-if 'start' in new and 'start' not in old:
-    start_or_stop = 'start'
+    start_or_stop = ''
 
-# Stopped task.
-elif ('start' not in new or 'end' in new) and 'start' in old:
-    start_or_stop = 'stop'
+    # Started task.
+    if 'start' in new and 'start' not in old:
+        start_or_stop = 'start'
 
-if start_or_stop:
-    tags = extract_tags_from(new)
+    # Stopped task.
+    elif ('start' not in new or 'end' in new) and 'start' in old:
+        start_or_stop = 'stop'
 
-    subprocess.call(['timew', start_or_stop] + tags + [':yes'])
+    if start_or_stop:
+        tags = extract_tags_from(new)
 
-# Modifications to task other than start/stop
-elif 'start' in new and 'start' in old:
-    old_tags = extract_tags_from(old)
-    new_tags = extract_tags_from(new)
+        subprocess.call(['timew', start_or_stop] + tags + [':yes'])
 
-    if old_tags != new_tags:
-        subprocess.call(['timew', 'untag', '@1'] + old_tags + [':yes'])
-        subprocess.call(['timew', 'tag', '@1'] + new_tags + [':yes'])
+    # Modifications to task other than start/stop
+    elif 'start' in new and 'start' in old:
+        old_tags = extract_tags_from(old)
+        new_tags = extract_tags_from(new)
 
-    old_annotation = extract_annotation_from(old)
-    new_annotation = extract_annotation_from(new)
+        if old_tags != new_tags:
+            subprocess.call(['timew', 'untag', '@1'] + old_tags + [':yes'])
+            subprocess.call(['timew', 'tag', '@1'] + new_tags + [':yes'])
 
-    if old_annotation != new_annotation:
-        subprocess.call(['timew', 'annotate', '@1', new_annotation])
+        old_annotation = extract_annotation_from(old)
+        new_annotation = extract_annotation_from(new)
+
+        if old_annotation != new_annotation:
+            subprocess.call(['timew', 'annotate', '@1', new_annotation])
+
+
+if __name__ == "__main__":
+    old = json.loads(input_stream.readline().decode("utf-8", errors="replace"))
+    new = json.loads(input_stream.readline().decode("utf-8", errors="replace"))
+    print(json.dumps(new))
+    main(old, new)
