@@ -1,0 +1,45 @@
+version: '3'
+services:
+  task-stable-timew-stable:
+    build:
+      context: .
+      dockerfile: test/docker/Dockerfile
+      args:
+        TEST_IMAGE: "${REGISTRY}/${OWNER}/task-timew:stable-stable"
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+
+  task-develop-timew-stable:
+    build:
+      context: .
+      dockerfile: test/docker/Dockerfile
+      args:
+        TEST_IMAGE: "${REGISTRY}/${OWNER}/task-timew:develop-stable"
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+
+  task-stable-timew-develop:
+    build:
+      context: .
+      dockerfile: test/docker/Dockerfile
+      args:
+        TEST_IMAGE: "${REGISTRY}/${OWNER}/task-timew:stable-develop"
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
+
+  task-develop-timew-develop:
+    build:
+      context: .
+      dockerfile: test/docker/Dockerfile
+      args:
+        TEST_IMAGE: "${REGISTRY}/${OWNER}/task-timew:develop-develop"
+    network_mode: "host"
+    security_opt:
+      - label=type:container_runtime_t
+    tty: true
