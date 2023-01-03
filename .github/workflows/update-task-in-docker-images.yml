@@ -1,0 +1,73 @@
+name: Update Taskwarrior in Docker images
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        type: choice
+        description: Taskwarrior release
+        options:
+          - develop
+          - stable
+  schedule:
+    - cron: 0 2 * * *
+
+env:
+  REGISTRY: "ghcr.io"
+  RELEASE: ${{ github.event.inputs.release || 'develop' }}
+
+jobs:
+  build-and-push-docker-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v2.8.1
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Taskwarrior [${{ env.RELEASE }}]/Timewarrior [devlop] Docker image
+        id: build-and-push-develop
+        uses: docker/build-push-action@v3.3.0
+        with:
+          context: .
+          file: "./test/docker/task-timew.dockerfile"
+          push: true
+          build-args: |
+            TASK_IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/task:${{ env.RELEASE }}
+            TIMEW_IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/timew:develop
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/task-timew:${{ env.RELEASE }}-develop
+
+      - name: Sign the published Docker image
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: cosign sign ${{ env.REGISTRY }}/${{ github.repository_owner }}/task-timew@${{ steps.build-and-push-develop.outputs.digest }}
+
+      - name: Build and push Taskwarrior [${{ env.RELEASE }}]/Timewarrior [stable] Docker image
+        id: build-and-push-stable
+        uses: docker/build-push-action@v3.3.0
+        with:
+          context: .
+          file: "./test/docker/task-timew.dockerfile"
+          push: true
+          build-args: |
+            TASK_IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/task:${{ env.RELEASE }}
+            TIMEW_IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/timew:stable
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/task-timew:${{ env.RELEASE }}-stable
+
+      - name: Sign the published Docker image
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: cosign sign ${{ env.REGISTRY }}/${{ github.repository_owner }}/task-timew@${{ steps.build-and-push-stable.outputs.digest }}
