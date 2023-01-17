@@ -49,7 +49,7 @@ jobs:
       - name: Build ${{ matrix.name }}
         env:
           REGISTRY: ghcr.io
-          OWNER: ${{ github.actor }}
+          OWNER: ${{ github.repository_owner }}
           GITHUB_USER: ${{ github.repository_owner }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.container }}
@@ -57,7 +57,7 @@ jobs:
       - name: Test ${{ matrix.name }}
         env:
           REGISTRY: ghcr.io
-          OWNER: ${{ github.actor }}
+          OWNER: ${{ github.repository_owner }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.container }}
         run: docker-compose run ${CONTAINER}
