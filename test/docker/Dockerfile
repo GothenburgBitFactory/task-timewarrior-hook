@@ -55,6 +55,7 @@ WORKDIR /task-on-modify-hook
 # Install on-modify-hook
 RUN mkdir -p ~/.task/hooks
 RUN cp on_modify.py ~/.task/hooks/on-modify.timewarrior
+RUN ln -s on-add.timewarrior on-modify.timewarrior
 RUN chmod +x ~/.task/hooks/on-modify.timewarrior
 
 # Run tests

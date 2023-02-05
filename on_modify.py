@@ -118,7 +118,14 @@ def main(old, new):
 
 
 if __name__ == "__main__":
-    old = json.loads(input_stream.readline().decode("utf-8", errors="replace"))
-    new = json.loads(input_stream.readline().decode("utf-8", errors="replace"))
+    # Hook is called with two lines input ('old', 'new') in case of an on-modify event,
+    # but only with one line ('new') in case of an on-add event.
+    # We want to call the hook with an emtpy 'old' ('{}') in the latter case.
+    # Prepending '{}' makes sure this happens if only one line is added...
+    lines = ['{}'] + [line.decode("utf-8", errors="replace") for line in input_stream.readlines()]
+
+    new = json.loads(lines.pop())
+    old = json.loads(lines.pop())
+
     print(json.dumps(new))
     main(old, new)
