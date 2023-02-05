@@ -29,7 +29,7 @@ import json
 import subprocess
 
 import pytest
-from mockito import unstub, verify, when
+from mockito import mock, unstub, verify, when
 
 import on_modify
 
@@ -45,6 +45,8 @@ def test_hook_should_process_annotate():
     """on-modify hook should process 'task annotate'"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -75,6 +77,8 @@ def test_hook_should_process_append():
     """on-modify hook should process 'task append'"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -105,6 +109,8 @@ def test_hook_should_process_delete():
     """on-modify hook should process 'task delete'"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -135,6 +141,8 @@ def test_hook_should_process_denotate():
     """on-modify hook should process 'task denotate'"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -165,6 +173,8 @@ def test_hook_should_process_done():
     """on-modify hook should process 'task done'"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -194,6 +204,8 @@ def test_hook_should_process_modify_desc():
     """on-modify hook should process 'task modify' for changing description"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -224,6 +236,8 @@ def test_hook_should_process_modify_tags():
     """on-modify hook should process 'task modify' for changing tags"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -256,6 +270,8 @@ def test_hook_should_process_modify_project():
     """on-modify hook should process 'task modify' for changing project"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -288,6 +304,8 @@ def test_hook_should_process_prepend():
     """on-modify hook should process 'task prepend'"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -318,6 +336,8 @@ def test_hook_should_process_start():
     """on-modify hook should process 'task start'"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
@@ -338,7 +358,7 @@ def test_hook_should_process_start():
             }''')
     )
 
-    verify(subprocess).call(['timew', 'start', 'Foo', ':yes'])
+    verify(subprocess).call(['timew', 'start', '20190820T203842Z', 'Foo', ':yes'])
 
 
 @pytest.mark.usefixtures("teardown")
@@ -346,6 +366,8 @@ def test_hook_should_process_stop():
     """on-modify hook should process 'task stop'"""
 
     when(subprocess).call(...)
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.count'], ...).thenReturn(mock({'stdout': '1\n'}))
+    when(subprocess).run(['timew', 'get', 'dom.active.tag.1'], ...).thenReturn(mock({'stdout': 'Foo\n'}))
     on_modify.main(
         json.loads(
             '''{
