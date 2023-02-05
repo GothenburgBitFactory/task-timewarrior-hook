@@ -201,3 +201,89 @@ class TestOnModifyHookScript(TestCase):
         j = self.timew.export()
         self.assertEqual(len(j), 1)
         self.assertClosedInterval(j[0], expectedTags=["Foo"])
+
+    def test_a_new_task_is_started_with_correct_time(self):
+        """A new task is started with correct time"""
+        self.task.activate_hooks()
+        self.task("add test +t1 start:2020-04-04 entry:2020-04-03")
+
+        dom = self.timew("get dom.active.start")
+        self.assertEqual(dom, "2020-04-04T00:00:00")
+
+    def test_modify_start_time(self):
+        """Modify start time"""
+        self.task.deactivate_hooks()
+        self.task("add test +t1 start:2020-04-04 entry:2020-04-03")
+        self.task.activate_hooks()
+        self.task("1 modify start:2020-04-05T12:00")
+
+        dom = self.timew("get dom.active.start")
+        self.assertEqual(dom, "2020-04-05T12:00:00")
+
+    def test_modify_tags(self):
+        """Modify tags"""
+        self.task.deactivate_hooks()
+        self.task("add test +t1 start:2020-04-04 entry:2020-04-03")
+        self.task("1 modify start:2020-04-05T12:00")
+        self.task.activate_hooks()
+        self.task("1 modify +t2 project:testing")
+
+        dom = self.timew("get dom.tag.count")
+        self.assertEqual(dom, 4)
+
+    def test_modify_start_time_of_second_task(self):
+        """Modify start time of second task"""
+        self.task.deactivate_hooks()
+        self.task("add test +t1 start:2020-04-04 entry:2020-04-03")
+        self.task("1 modify start:2020-04-05T12:00")
+        self.task.activate_hooks()
+        self.task("add test2 +t3 entry:2020-04-03")
+        self.task("2 modify start:2020-04-06")
+
+        j = self.timew.export()
+        self.assertEqual(len(j), 1)
+        self.assertClosedInterval(j[0], expectedTags=["Foo"])
+
+    def test_modify_tags_of_second_now_started_task(self):
+        """Modify tags of second now started task"""
+        self.task.deactivate_hooks()
+        self.task("add test +t1 start:2020-04-04 entry:2020-04-03")
+        self.task("1 modify start:2020-04-05T12:00")
+        self.task("add test2 +t3 entry:2020-04-03")
+        self.task.activate_hooks()
+        self.task("2 modify +t3")
+
+        j = self.timew.export()
+        self.assertEqual(len(j), 1)
+        self.assertClosedInterval(j[0], expectedTags=["Foo"])
+
+    def test_stop_second_task(self):
+        """Stop second task"""
+        self.task.deactivate_hooks()
+        self.task("add test +t1 start:2020-04-04 entry:2020-04-03")
+        self.task("1 modify start:2020-04-05T12:00")
+        self.task("add test2 +t3 entry:2020-04-03")
+        self.task.activate_hooks()
+        self.task("2 stop")
+
+        j = self.timew.export()
+        self.assertEqual(len(j), 1)
+        self.assertClosedInterval(j[0], expectedTags=["Foo"])
+
+    def test_switch_active_task_and_dont_override_previous_interval(self):
+        """Switch active task and don\'t override previous interval"""
+        self.task.deactivate_hooks()
+        self.task("add test +t1 start:2020-04-04 entry:2020-04-03")
+        self.task("1 modify start:2020-04-05T12:00")
+        self.task("add test2 +t3 entry:2020-04-03")
+        self.task("2 stop")
+        self.task.activate_hooks()
+        self.task('1 stop')
+        self.timew("modify end @1 2020-04-07T00:00")
+        # Automatically correct overlap, needs support in timew core
+        # task 2 modify start:today
+        self.task.runError("2 modify start:2020-04-05T00:00")
+        self.task("2 modify start:2020-04-07")
+
+        dom = self.timew("get dom.active.tag.count")
+        self.assertEqual(dom, "2")
