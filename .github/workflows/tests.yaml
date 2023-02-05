@@ -39,6 +39,10 @@ jobs:
     runs-on: ${{ matrix.runner }}
     continue-on-error: ${{ matrix.continue-on-error == true }}
     steps:
+      - name: Create lowercase repository name
+        run: |
+          GHCR_REPOSITORY="${{ github.repository_owner }}"
+          echo "REPOSITORY=${GHCR_REPOSITORY,,}" >> ${GITHUB_ENV}
       - uses: actions/checkout@v3
       - name : Login to GHCR
         uses : docker/login-action@v2.1.0
@@ -49,7 +53,7 @@ jobs:
       - name: Build ${{ matrix.name }}
         env:
           REGISTRY: ghcr.io
-          OWNER: ${{ github.repository_owner }}
+          OWNER: ${{ env.REPOSITORY }}
           GITHUB_USER: ${{ github.repository_owner }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.container }}
@@ -57,7 +61,7 @@ jobs:
       - name: Test ${{ matrix.name }}
         env:
           REGISTRY: ghcr.io
-          OWNER: ${{ github.repository_owner }}
+          OWNER: ${{ env.REPOSITORY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.container }}
         run: docker-compose run ${CONTAINER}
