@@ -51,7 +51,7 @@ def extract_tags_from(json_obj):
         tags.append(json_obj['project'])
 
     if 'tags' in json_obj:
-        tags.extend(json_obj['tags'])
+        tags.extend([json_obj['tags']])
 
     return tags
 
