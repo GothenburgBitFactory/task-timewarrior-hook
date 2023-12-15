@@ -367,3 +367,62 @@ def test_hook_should_process_stop():
     )
 
     verify(subprocess).call(['timew', 'stop', 'Foo', ':yes'])
+
+@pytest.mark.usefixtures("teardown")
+def test_hook_should_process_start_issue34_with_multiple_tags():
+    """on-modify hook should process 'task start' (issue #34) with multiple tags"""
+
+    when(subprocess).call(...)
+    on_modify.main(
+        json.loads(
+            '''{
+            "description": "Foo",
+            "entry": "20190820T203842Z",
+            "modified": "20190820T203842Z",
+            "status": "pending",
+            "tags": ["abc", "xyz"],
+            "uuid": "16af44c5-57d2-43bf-97ed-cf2e541d927f"
+            }'''),
+        json.loads(
+            '''{
+            "description": "Foo",
+            "entry": "20190820T203842Z",
+            "modified": "20190820T203842Z",
+            "start": "20190820T203842Z",
+            "status": "pending",
+            "tags": "abc,xyz",
+            "uuid": "16af44c5-57d2-43bf-97ed-cf2e541d927f"
+            }''')
+    )
+
+    verify(subprocess).call(['timew', 'start', 'Foo', 'abc', 'xyz', ':yes'])
+
+
+@pytest.mark.usefixtures("teardown")
+def test_hook_should_process_start_issue34_with_single_tags():
+    """on-modify hook should process 'task start' (issue #34) with single tags"""
+
+    when(subprocess).call(...)
+    on_modify.main(
+        json.loads(
+            '''{
+            "description": "Foo",
+            "entry": "20190820T203842Z",
+            "modified": "20190820T203842Z",
+            "status": "pending",
+            "tags": ["abc"],
+            "uuid": "16af44c5-57d2-43bf-97ed-cf2e541d927f"
+            }'''),
+        json.loads(
+            '''{
+            "description": "Foo",
+            "entry": "20190820T203842Z",
+            "modified": "20190820T203842Z",
+            "start": "20190820T203842Z",
+            "status": "pending",
+            "tags": "abc",
+            "uuid": "16af44c5-57d2-43bf-97ed-cf2e541d927f"
+            }''')
+    )
+
+    verify(subprocess).call(['timew', 'start', 'Foo', 'abc', ':yes'])
