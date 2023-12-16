@@ -1,0 +1,59 @@
+=== The on-modify.taskwarrior hook was extracted to its own GitHub repository
+    All issue ids below refer to the Timewarrior repository (https://github.com/GothenburgBitFactory/timewarrior)
+
+=== Timewarrior 1.3.0
+
+- #259    Set python version explicitly to python3
+
+=== Timewarrior 1.2.0
+
+-         Process `task annotate`
+-         Small refactoring
+-         Fix for `task delete`
+-         Make hook run in both python 2 and 3
+-         on-modify.timewarrior: Deal with non-UTF-8 characters in input data from taskwarrior
+          (thanks to Dennis Schridde)
+-         Fix on-modify.timewarrior hook for tasks with multi line description
+          (thanks to Dennis Schridde)
+-         on-modify.timewarrior: Fix "from __future__ imports must occur at the beginning of the file"
+          (thanks to Dennis Schridde)
+-         Make ext/on-modify.timewarrior executable so tests will work
+-         MAINT: Removing comment.
+          (thanks to quazgar)
+- #216    MAINT: on-modify.timewarrior imports from future
+          (thanks to quazgar)
+-         ReviewFixes: Reset tags instead of stop/start task; formatting changes
+          (thanks to Harish Ved)
+- #105    Handling modifications to description/tag/project for task
+          (thanks to Harish Ved)
+- #98     TI-94 Fix Command Injection Security Vulnerability in on-modify.timewarrior
+          (thanks to Aaron Fields)
+-         Use https:// link for opensource.org
+
+=== Timewarrior moved to GitHub
+    All ids below refer to the no-longer existent issue tracker on tasktools.org
+
+=== Timewarrior 1.1.0
+
+- TI-32   taskwarrior hook script doesn't stop recording waiting task
+          (thanks to Yury Videneev)
+-         extensions: Make extensions conform with PEP8
+- TI-48   Timewarrior hook is not Python3 compatible
+          (thanks to Josh Proehl, Armado Martinez)
+- TI-51   in the taskwarrior hook, deleting a task doesn't stop the watch
+          (thanks to Mattia Rizzolo)
+-         Taskwarrior projects are now used as-is as tags, and also split on the '.' to represent project hierarchy as separate tags.
+          (thanks to Josh Proehl)
+
+=== Timewarrior 1.0.0
+
+-         Ext: Fixed utf8 encoding in Taskwarrior integration hook
+          (thanks to Martin Boeker)
+- TI-16   Should handle case where taskwarrior hook is used before timew
+          (thanks to Aaron Curtis)
+
+=== Timewarrior 0.9.5.alpha
+
+-         Ext: Removed UUID from hook script
+-         Extensions: Added Taskwarrior integration hook
+-         Ext: Added initial extensions and README
