@@ -57,11 +57,11 @@ jobs:
           GITHUB_USER: ${{ github.repository_owner }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.container }}
-        run: docker-compose build ${CONTAINER}
+        run: docker compose build ${CONTAINER}
       - name: Test ${{ matrix.name }}
         env:
           REGISTRY: ghcr.io
           OWNER: ${{ env.REPOSITORY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.container }}
-        run: docker-compose run ${CONTAINER}
+        run: docker compose run ${CONTAINER}
