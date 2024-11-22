@@ -57,6 +57,9 @@ RUN mkdir -p ~/.task/hooks
 RUN cp on_modify.py ~/.task/hooks/on-modify.timewarrior
 RUN chmod +x ~/.task/hooks/on-modify.timewarrior
 
+RUN echo "timew: $( timew --version )" ; \
+    echo "task: $( task --version )"
+
 # Run tests
 ENV TASK_USE_PATH=true TIMEW_USE_PATH=true
 CMD [ "bash", "-c", "/venv/bin/pytest /task-on-modify-hook/test/test_on-modify_e2e.py"]

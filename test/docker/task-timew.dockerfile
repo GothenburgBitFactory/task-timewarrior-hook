@@ -37,3 +37,7 @@ COPY --from=timew /usr/local/bin/timew /usr/local/bin
 # Initialize Timewarrior
 WORKDIR /root/
 RUN timew :yes
+
+# Print version information
+RUN echo "timew: $( timew --version )" ; \
+    echo "task: $( task --version )"
