@@ -50,7 +50,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build ${{ matrix.name }}
+      - name: Build e2e on ${{ matrix.name }}
         env:
           REGISTRY: ghcr.io
           OWNER: ${{ env.REPOSITORY }}
@@ -58,7 +58,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONTAINER: ${{ matrix.container }}
         run: docker compose build ${CONTAINER}
-      - name: Test ${{ matrix.name }}
+      - name: Run e2e on ${{ matrix.name }}
         env:
           REGISTRY: ghcr.io
           OWNER: ${{ env.REPOSITORY }}
