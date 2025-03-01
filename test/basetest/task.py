@@ -328,8 +328,8 @@ class Task(object):
         for filename in os.listdir(folder):
             file_path = os.path.join(folder, filename)
             try:
-                print("Emptying {}".format(file_path))
+                print("Removing {}".format(file_path))
                 if os.path.isfile(file_path) or os.path.islink(file_path):
-                    open(file_path, 'w').close()
+                    os.remove(file_path)
             except Exception as e:
                 print("Failed to delete {}. Reason: {}".format(file_path, e))
