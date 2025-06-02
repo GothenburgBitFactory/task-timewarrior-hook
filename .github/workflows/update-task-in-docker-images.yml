@@ -45,7 +45,7 @@ jobs:
 
       - name: Build and push Taskwarrior [${{ env.RELEASE }}]/Timewarrior [devlop] Docker image
         id: build-and-push-develop
-        uses: docker/build-push-action@v6.17.0
+        uses: docker/build-push-action@v6.18.0
         with:
           context: .
           file: "./test/docker/task-timew.dockerfile"
@@ -62,7 +62,7 @@ jobs:
 
       - name: Build and push Taskwarrior [${{ env.RELEASE }}]/Timewarrior [stable] Docker image
         id: build-and-push-stable
-        uses: docker/build-push-action@v6.17.0
+        uses: docker/build-push-action@v6.18.0
         with:
           context: .
           file: "./test/docker/task-timew.dockerfile"
