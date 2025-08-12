@@ -31,7 +31,7 @@ jobs:
           echo "REPOSITORY=${GHCR_REPOSITORY,,}" >> ${GITHUB_ENV}
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v3.9.2
