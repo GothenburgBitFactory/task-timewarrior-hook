@@ -67,7 +67,7 @@ def extract_annotation_from(json_obj):
     if 'annotations' not in json_obj:
         return '\'\''
 
-    return json_obj['annotations'][0]['description']
+    return json_obj['annotations'][-1]['description']
 
 
 def main(old, new):
