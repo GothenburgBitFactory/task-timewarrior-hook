@@ -4,7 +4,7 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup
         uses: actions/setup-python@v6
         with:
@@ -43,7 +43,7 @@ jobs:
         run: |
           GHCR_REPOSITORY="${{ github.repository_owner }}"
           echo "REPOSITORY=${GHCR_REPOSITORY,,}" >> ${GITHUB_ENV}
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name : Login to GHCR
         uses : docker/login-action@v3.6.0
         with :
